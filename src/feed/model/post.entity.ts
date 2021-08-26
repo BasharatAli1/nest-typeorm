@@ -1,7 +1,9 @@
+import { UserEntity } from 'src/auth/model/auth.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -17,4 +19,14 @@ export class FeedEntity {
   // ceatedAt: Date;
   @CreateDateColumn()
   createdAt: Date;
+
+  @ManyToOne(
+    () => UserEntity,
+    (userEntity) => {
+      userEntity.feedPosts;
+      cascade: true;
+      // update: false;
+    },
+  )
+  author: UserEntity;
 }

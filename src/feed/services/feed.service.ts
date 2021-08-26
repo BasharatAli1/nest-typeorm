@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable } from 'rxjs';
+import { UserEntity } from 'src/auth/model/auth.entity';
+import { User } from 'src/auth/model/user.interface';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { FeedEntity } from '../model/post.entity';
 import { Feed } from '../model/post.interface';
@@ -10,6 +11,8 @@ export class FeedService {
   constructor(
     @InjectRepository(FeedEntity)
     private readonly feedRepository: Repository<FeedEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
   getAll(): string {
     return 'This action returns all Feeds!';
@@ -25,8 +28,17 @@ export class FeedService {
   createFeed(): string {
     return 'This action create a Feed!';
   }
-  createPost(feedPost: Feed): Observable<Feed> {
-    return from(this.feedRepository.save(feedPost));
+  async createPost(user: User, feedPost: Feed): Promise<Feed> {
+    const email = user.email;
+    console.log('user', user);
+    const user_id = await this.userRepository.findOne(
+      { email },
+      {
+        select: ['id'],
+      },
+    );
+    feedPost.author = user_id;
+    return this.feedRepository.save(feedPost);
   }
   // findAllPosts(): Promise<Feed[]> {
   //   return this.feedRepository.find();

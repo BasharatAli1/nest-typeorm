@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FeedModule } from './feed/feed.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,12 +16,12 @@ import { FeedModule } from './feed/feed.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      // entities: ['dist/**/*.entity{.js,.ts}'],
       synchronize: true,
       migrations: ['dist/migrations/*{.ts,.js}'],
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
     FeedModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
